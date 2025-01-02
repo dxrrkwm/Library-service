@@ -13,7 +13,7 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
-from python_dotenv import load_dotenv
+from dotenv import load_dotenv
 
 load_dotenv()
 
