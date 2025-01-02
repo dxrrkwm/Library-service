@@ -2,7 +2,7 @@ PYTHON = python
 POETRY = poetry
 PROJECT_NAME = Library-service
 CONTAINER_NAME = ${PROJECT_NAME}_container
-DOCKER-COMPOSE = docker-compose -f compose.yml
+DOCKER-COMPOSE = docker-compose -f compose.yaml
 
 .PHONY: help
 help:

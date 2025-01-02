@@ -19,10 +19,7 @@ RUN --mount=type=cache,target=$POETRY_CACHE_DIR poetry install --without dev --n
 RUN adduser \
     --disabled-password \
     --gecos "" \
-    --home "/nonexistent" \
-    --shell "/sbin/nologin" \
     --no-create-home \
-    --uid "${UID}" \
     appuser
 
 USER appuser

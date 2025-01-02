@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "debug_toolbar",
     "books_service",
-    "borrowings"
+    "borrowings",
     "users",
     "views",
     "payments",
