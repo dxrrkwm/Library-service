@@ -79,3 +79,30 @@ class AuthenticatedBooksServiceApiTests(TestCase):
         res = self.client.delete(url)
 
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class AdminBooksServiceApiTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_user(
+            "test@test.com",
+            "password123",
+            is_staff=True
+        )
+        self.client.force_authenticate(self.user)
+
+    def test_create_book(self):
+        payload = fixture_book_data()
+        res = self.client.post(BOOKS_SERVICE_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        book = Book.objects.get(id=res.data["id"])
+        for key in payload.keys():
+            self.assertEqual(payload[key], getattr(book, key))
+
+    def test_create_book_with_invalid_data(self):
+        payload = fixture_book_data()
+        payload["title"] = ""
+        res = self.client.post(BOOKS_SERVICE_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
