@@ -1,8 +1,8 @@
-from drf_spectacular.utils import extend_schema, OpenApiParameter
-from rest_framework.response import Response
-from rest_framework import generics, status
-from rest_framework.views import APIView
 from django.utils.timezone import now
+from drf_spectacular.utils import OpenApiParameter, extend_schema
+from rest_framework import generics, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import Borrowing
 from .serializers import (
