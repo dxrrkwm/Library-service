@@ -1,9 +1,10 @@
 from django.utils.timezone import now
-from rest_framework.test import APITestCase
 from rest_framework import status
-from users.models import User
+from rest_framework.test import APITestCase
+
 from books_service.models import Book
 from borrowings.models import Borrowing
+from users.models import User
 
 
 class ReturnBookViewTest(APITestCase):
