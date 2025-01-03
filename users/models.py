@@ -46,5 +46,5 @@ class User(AbstractUser):
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
-    
+
     objects = UserManager()
