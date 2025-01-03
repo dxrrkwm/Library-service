@@ -1,3 +1,5 @@
+from datetime import date
+
 from rest_framework import serializers
 
 from books_service.serializers import BookSerializer
@@ -19,6 +21,11 @@ class BorrowingSerializer(serializers.ModelSerializer):
             "book",
             "user"
         )
+
+    def validate_expected_return_date(self, value):
+        if value < date.today():
+            raise serializers.ValidationError("The expected return date cannot be in the past.")
+        return value
 
 
 class BorrowingDetailSerializer(BorrowingSerializer):
