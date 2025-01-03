@@ -29,7 +29,7 @@ jobs:
           poetry install
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          POSTGRES_HOST: db
+          POSTGRES_HOST: 127.0.0.1
           POSTGRES_PORT: 5432
           POSTGRES_USER: library
           POSTGRES_PASSWORD: 1234
@@ -38,7 +38,7 @@ jobs:
         run: poetry run python manage.py migrate
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          POSTGRES_HOST: db
+          POSTGRES_HOST: 127.0.0.1
           POSTGRES_PORT: 5432
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
@@ -47,7 +47,7 @@ jobs:
         run: poetry run python manage.py test
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          POSTGRES_HOST: db
+          POSTGRES_HOST: 127.0.0.1
           POSTGRES_PORT: 5432
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
