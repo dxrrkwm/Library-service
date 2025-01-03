@@ -4,3 +4,5 @@
 **/*.pyo
 .idea/
 .vscode/
+.coverage
+*.sqlite3

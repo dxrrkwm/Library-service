@@ -1,0 +1,112 @@
+[
+    {
+        "model": "books_service.book",
+        "pk": 1,
+        "fields": {
+            "title": "The Catcher in the Rye",
+            "author": "J.D. Salinger",
+            "cover": "Hard",
+            "inventory": 5,
+            "daily_fee": "15.50"
+        }
+    },
+    {
+        "model": "books_service.book",
+        "pk": 2,
+        "fields": {
+            "title": "To Kill a Mockingbird",
+            "author": "Harper Lee",
+            "cover": "Soft",
+            "inventory": 10,
+            "daily_fee": "12.00"
+        }
+    },
+    {
+        "model": "books_service.book",
+        "pk": 3,
+        "fields": {
+            "title": "1984",
+            "author": "George Orwell",
+            "cover": "Hard",
+            "inventory": 3,
+            "daily_fee": "14.75"
+        }
+    },
+    {
+        "model": "books_service.book",
+        "pk": 4,
+        "fields": {
+            "title": "Pride and Prejudice",
+            "author": "Jane Austen",
+            "cover": "Soft",
+            "inventory": 8,
+            "daily_fee": "10.25"
+        }
+    },
+    {
+        "model": "books_service.book",
+        "pk": 5,
+        "fields": {
+            "title": "Moby Dick",
+            "author": "Herman Melville",
+            "cover": "Hard",
+            "inventory": 2,
+            "daily_fee": "18.00"
+        }
+    },
+    {
+        "model": "books_service.book",
+        "pk": 6,
+        "fields": {
+            "title": "The Great Gatsby",
+            "author": "F. Scott Fitzgerald",
+            "cover": "Soft",
+            "inventory": 6,
+            "daily_fee": "11.50"
+        }
+    },
+    {
+        "model": "books_service.book",
+        "pk": 7,
+        "fields": {
+            "title": "War and Peace",
+            "author": "Leo Tolstoy",
+            "cover": "Hard",
+            "inventory": 9,
+            "daily_fee": "16.00"
+        }
+    },
+    {
+        "model": "books_service.book",
+        "pk": 8,
+        "fields": {
+            "title": "Crime and Punishment",
+            "author": "Fyodor Dostoevsky",
+            "cover": "Soft",
+            "inventory": 4,
+            "daily_fee": "13.00"
+        }
+    },
+    {
+        "model": "books_service.book",
+        "pk": 9,
+        "fields": {
+            "title": "Brave New World",
+            "author": "Aldous Huxley",
+            "cover": "Hard",
+            "inventory": 7,
+            "daily_fee": "17.50"
+        }
+    },
+    {
+        "model": "books_service.book",
+        "pk": 10,
+        "fields": {
+            "title": "The Hobbit",
+            "author": "J.R.R. Tolkien",
+            "cover": "Soft",
+            "inventory": 12,
+            "daily_fee": "9.99"
+        }
+    }
+]
