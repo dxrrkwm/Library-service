@@ -1,9 +1,8 @@
-from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-USER_CREATE_URL = reverse('users:create')
+USER_CREATE_URL = reverse("users:create")
 
 class CustomUserTest(APITestCase):
     def test_create_user(self):
