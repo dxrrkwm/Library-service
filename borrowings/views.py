@@ -3,6 +3,7 @@ from django.utils.timezone import now
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import generics, status
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -17,6 +18,7 @@ from borrowings.serializers import (
 class BorrowingListView(generics.ListCreateAPIView):
     queryset = Borrowing.objects.select_related("book", "user")
     serializer_class = BorrowingListSerializer
+    permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
         book = serializer.validated_data["book"]
@@ -35,6 +37,9 @@ class BorrowingListView(generics.ListCreateAPIView):
         is_active = self.request.query_params.get("is_active")
 
         queryset = self.queryset
+
+        if not (self.request.user.is_staff or self.request.user.is_superuser):
+            queryset = queryset.filter(user=self.request.user)
 
         if is_active:
             queryset = queryset.filter(user__is_active=is_active)
