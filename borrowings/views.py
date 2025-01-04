@@ -78,9 +78,11 @@ class BorrowingListView(generics.ListCreateAPIView):
 class BorrowingDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Borrowing.objects.select_related("book", "user")
     serializer_class = BorrowingDetailSerializer
+    permission_classes = (IsAuthenticated,)
 
 
 class ReturnBookView(APIView):
+    permission_classes = (IsAuthenticated,)
     def post(self, request, pk):
         try:
             borrowing = Borrowing.objects.get(pk=pk)
