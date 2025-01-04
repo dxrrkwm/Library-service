@@ -175,7 +175,7 @@ JAZZMIN_SETTINGS = {
     "site_header": "Library Service",
     "welcome_sign": "Welcome to the Library Service Admin Panel",
     "topmenu_links": [
-        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "Home",},
         {"app": "books_service"},
         {"app": "users"},
         {"app": "borrowings"},
