@@ -3,14 +3,11 @@ from datetime import date
 from rest_framework import serializers
 
 from books_service.serializers import BookSerializer
+from borrowings.models import Borrowing
 from users.serializers import UserSerializer
-
-from .models import Borrowing
 
 
 class BorrowingSerializer(serializers.ModelSerializer):
-    actual_return_date = serializers.DateField(read_only=True)
-
     class Meta:
         model = Borrowing
         fields = (
@@ -26,6 +23,10 @@ class BorrowingSerializer(serializers.ModelSerializer):
         if value < date.today():
             raise serializers.ValidationError("The expected return date cannot be in the past.")
         return value
+
+
+class BorrowingListSerializer(BorrowingSerializer):
+    actual_return_date = serializers.DateField(read_only=True)
 
 
 class BorrowingDetailSerializer(BorrowingSerializer):
