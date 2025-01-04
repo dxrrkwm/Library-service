@@ -183,7 +183,6 @@ JAZZMIN_SETTINGS = {
         "show_ui_builder": False,
 }
 
-
 JAZZMIN_UI_TWEAKS = {
     "navbar_small_text": False,
     "footer_small_text": False,
