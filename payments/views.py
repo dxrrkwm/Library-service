@@ -24,7 +24,10 @@ class PaymentListRetrieveViewSet(
         return self.action_serializer_classes.get(self.action, PaymentSerializer)
 
     def get_queryset(self):
-        queryset = Payment.objects.select_related("borrowing")
+        queryset = Payment.objects.select_related(
+            "borrowing__book",
+            "borrowing__user"
+        )
 
         if self.request.user.is_staff:
             return queryset
