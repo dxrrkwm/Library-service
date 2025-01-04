@@ -10,6 +10,7 @@ from borrowings.models import Borrowing
 from borrowings.serializers import (
     BorrowingDetailSerializer,
     BorrowingListSerializer,
+    BorrowingSerializer,
 )
 
 
@@ -43,6 +44,11 @@ class BorrowingListView(generics.ListCreateAPIView):
             queryset = queryset.filter(user_id__in=user_ids)
 
         return queryset.distinct()
+
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return BorrowingListSerializer
+        return BorrowingSerializer
 
     @extend_schema(
         parameters=[
