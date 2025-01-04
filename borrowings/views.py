@@ -48,6 +48,7 @@ class BorrowingListView(generics.ListCreateAPIView):
     def get_serializer_class(self):
         if self.request.method == "GET":
             return BorrowingListSerializer
+
         return BorrowingSerializer
 
     @extend_schema(
