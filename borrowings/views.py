@@ -79,6 +79,10 @@ class BorrowingDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Borrowing.objects.select_related("book", "user")
     serializer_class = BorrowingDetailSerializer
     permission_classes = (IsAuthenticated,)
+    def get_queryset(self):
+        if not (self.request.user.is_staff or self.request.user.is_superuser):
+            self.queryset = self.queryset.filter(user=self.request.user)
+        return self.queryset
 
 
 class ReturnBookView(APIView):
