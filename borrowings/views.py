@@ -1,27 +1,26 @@
+from django.db import transaction
 from django.utils.timezone import now
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import generics, status
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Borrowing
-from .serializers import (
+from borrowings.models import Borrowing
+from borrowings.serializers import (
     BorrowingDetailSerializer,
-    BorrowingSerializer,
+    BorrowingListSerializer,
 )
 
 
 class BorrowingListView(generics.ListCreateAPIView):
     queryset = Borrowing.objects.select_related("book", "user")
-    serializer_class = BorrowingSerializer
+    serializer_class = BorrowingListSerializer
 
     def perform_create(self, serializer):
         book = serializer.validated_data["book"]
         if book.inventory <= 0:
-            return Response(
-                {"error": "The book is not available for borrowing."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return ValidationError({"error": "The book is not available for borrowing."})
         book.inventory -= 1
         book.save()
         serializer.save()
@@ -54,7 +53,7 @@ class BorrowingListView(generics.ListCreateAPIView):
             ),
             OpenApiParameter(
                 "is_active",
-                type={"type": "integer", "items": {"type": "number"}},
+                type={"type": "bool", "items": {"type": "number"}},
                 description="Filter by user is activ "
                             "(ex. ?is_activ=1 or 0)",
             ),
@@ -73,21 +72,18 @@ class ReturnBookView(APIView):
     def post(self, request, pk):
         try:
             borrowing = Borrowing.objects.get(pk=pk)
-        except Borrowing.DoesNotExist:
-            return Response(
-                {"error": "Borrowing not found."},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        except Borrowing.DoesNotExist as err:
+            raise ValidationError({"error": "Borrowing not found."}) from err
 
         if borrowing.actual_return_date:
-            return Response(
-                {"error": "The book has already been returned."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        borrowing.actual_return_date = now().date()
-        borrowing.book.inventory += 1
-        borrowing.book.save()
-        borrowing.save()
+            raise ValidationError({"error": "The book has already been returned."})
+
+        with transaction.atomic():
+            borrowing.actual_return_date = now().date()
+            borrowing.book.inventory += 1
+            borrowing.book.save()
+            borrowing.save()
+
         return Response(
             {"message": "The book has been successfully returned."},
             status=status.HTTP_200_OK
