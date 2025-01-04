@@ -36,6 +36,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -168,3 +169,14 @@ SIMPLE_JWT = {
 }
 
 AUTH_USER_MODEL = "users.User"
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Library Service Admin",
+    "site_header": "Library Service",
+    "welcome_sign": "Welcome to the Library Service Admin Panel",
+    "topmenu_links": [
+        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"app": "books_service"},
+        {"app": "users"},
+    ],
+}
