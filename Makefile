@@ -18,10 +18,20 @@ help:
 	@echo "  lint      Run Ruff"
 	@echo "  clean     Remove cache files"
 	@echo "  loaddata  Load initial data"
+	@echo "  upbuild   Start the application with build"
+	@echo "  build     Build the application"
 
 .PHONY: deps
 deps:
 	${POETRY} install
+
+.PHONY: build
+build:
+	${DOCKER-COMPOSE} build
+
+.PHONY: upbuild
+build:
+	${DOCKER-COMPOSE} up --build
 
 .PHONY: up
 up:
