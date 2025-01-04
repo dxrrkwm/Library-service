@@ -59,7 +59,7 @@ lint:
 
 .PHONY: loaddata
 loaddata:
-	${DOCKER-COMPOSE} exec app python manage.py loaddata sample_books_service.json
+	${DOCKER-COMPOSE} exec app python manage.py loaddata initial_data.json
 
 .PHONY: clean
 clean:
