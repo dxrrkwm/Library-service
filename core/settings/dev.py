@@ -2,8 +2,8 @@ import os
 
 from dotenv import load_dotenv
 
-from core.settings.base import *
-from core.settings.prod import DATABASES
+from core.settings.base import *  # noqa
+from core.settings.base import INSTALLED_APPS, MIDDLEWARE
 
 load_dotenv()
 
@@ -24,7 +24,6 @@ INTERNAL_IPS = [
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-DATABASES = None
 if os.environ.get("IN_DOCKER"):
     DATABASES = {
         "default": {
@@ -36,7 +35,7 @@ if os.environ.get("IN_DOCKER"):
             "PORT": os.environ["POSTGRES_PORT"]
         }
     }
-if DATABASES is None:
+else:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
