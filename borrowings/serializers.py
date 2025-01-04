@@ -18,6 +18,7 @@ class BorrowingSerializer(serializers.ModelSerializer):
             "book",
             "user"
         )
+        read_only_fields = ("id", "actual_return_date")
 
     def validate_expected_return_date(self, value):
         if value < date.today():
@@ -26,7 +27,26 @@ class BorrowingSerializer(serializers.ModelSerializer):
 
 
 class BorrowingListSerializer(BorrowingSerializer):
-    actual_return_date = serializers.DateField(read_only=True)
+    user_email = serializers.SlugRelatedField(
+        source="user",
+        slug_field="email",
+        read_only=True
+    )
+    book_title = serializers.SlugRelatedField(
+        source="book",
+        slug_field="title",
+        read_only=True
+    )
+
+    class Meta:
+        model = Borrowing
+        fields = (
+            "id",
+            "borrow_date",
+            "book_title",
+            "user_email",
+            "actual_return_date",
+        )
 
 
 class BorrowingDetailSerializer(BorrowingSerializer):
