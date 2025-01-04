@@ -1,9 +1,11 @@
+from django.core.cache import cache
 from django.db import transaction
+from django.utils.decorators import method_decorator
 from django.utils.timezone import now
+from django.views.decorators.cache import cache_page
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import generics, status
 from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -18,12 +20,11 @@ from borrowings.serializers import (
 class BorrowingListView(generics.ListCreateAPIView):
     queryset = Borrowing.objects.select_related("book", "user")
     serializer_class = BorrowingListSerializer
-    permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
         book = serializer.validated_data["book"]
         if book.inventory <= 0:
-            return ValidationError({"error": "The book is not available for borrowing."})
+            raise ValidationError({"error": "The book is not available for borrowing."})
         book.inventory -= 1
         book.save()
         serializer.save()
@@ -38,9 +39,6 @@ class BorrowingListView(generics.ListCreateAPIView):
 
         queryset = self.queryset
 
-        if not (self.request.user.is_staff or self.request.user.is_superuser):
-            queryset = queryset.filter(user=self.request.user)
-
         if is_active:
             queryset = queryset.filter(user__is_active=is_active)
 
@@ -53,7 +51,6 @@ class BorrowingListView(generics.ListCreateAPIView):
     def get_serializer_class(self):
         if self.request.method == "GET":
             return BorrowingListSerializer
-
         return BorrowingSerializer
 
     @extend_schema(
@@ -66,27 +63,34 @@ class BorrowingListView(generics.ListCreateAPIView):
             OpenApiParameter(
                 "is_active",
                 type={"type": "bool", "items": {"type": "number"}},
-                description="Filter by user is activ "
-                            "(ex. ?is_activ=1 or 0)",
+                description="Filter by user is active "
+                            "(ex. ?is_active=1 or 0)",
             ),
         ]
     )
+    @method_decorator(cache_page(60 * 15))
     def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
+        user = request.query_params.get("user")
+        is_active = request.query_params.get("is_active")
+
+        cache_key = f"borrowing_list_{user}_{is_active}"
+        cached_data = cache.get(cache_key)
+
+        if cached_data:
+            return Response(cached_data)
+
+        response = super().list(request, *args, **kwargs)
+        cache.set(cache_key, response.data, 900)
+
+        return response
 
 
 class BorrowingDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Borrowing.objects.select_related("book", "user")
     serializer_class = BorrowingDetailSerializer
-    permission_classes = (IsAuthenticated,)
-    def get_queryset(self):
-        if not (self.request.user.is_staff or self.request.user.is_superuser):
-            self.queryset = self.queryset.filter(user=self.request.user)
-        return self.queryset
 
 
 class ReturnBookView(APIView):
-    permission_classes = (IsAuthenticated,)
     def post(self, request, pk):
         try:
             borrowing = Borrowing.objects.get(pk=pk)

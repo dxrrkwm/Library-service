@@ -64,3 +64,16 @@ loaddata:
 .PHONY: clean
 clean:
 	find . -name "__pycache__" -exec rm -rf {} +
+
+# Redis Commands
+.PHONY: start-redis
+start-redis:
+	${DOCKER-COMPOSE} up -d redis
+
+.PHONY: stop-redis
+stop-redis:
+	${DOCKER-COMPOSE} down redis
+
+.PHONY: flush-redis
+flush-redis:
+	${DOCKER-COMPOSE} exec redis redis-cli flushall
