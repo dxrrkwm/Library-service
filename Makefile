@@ -18,7 +18,7 @@ help:
 	@echo "  lint      Run Ruff"
 	@echo "  clean     Remove cache files"
 	@echo "  loaddata  Load initial data"
-	@echo "  upbuild   Start the application with build"
+	@echo "  up build   Start the application with build"
 	@echo "  build     Build the application"
 
 .PHONY: deps
@@ -29,7 +29,7 @@ deps:
 build:
 	${DOCKER-COMPOSE} build
 
-.PHONY: upbuild
+.PHONY: up build
 build:
 	${DOCKER-COMPOSE} up --build
 
