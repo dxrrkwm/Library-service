@@ -17,6 +17,7 @@ help:
 	@echo "  test      Run tests"
 	@echo "  lint      Run Ruff"
 	@echo "  clean     Remove cache files"
+	@echo "  loaddata  Load initial data"
 
 .PHONY: deps
 deps:
@@ -45,6 +46,10 @@ test:
 .PHONY: lint
 lint:
 	${POETRY} run ruff check --fix
+
+.PHONY: loaddata
+loaddata:
+	${DOCKER-COMPOSE} exec app python manage.py loaddata fixtures/initial_data.json
 
 .PHONY: clean
 clean:
