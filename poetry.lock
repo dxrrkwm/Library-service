@@ -430,6 +430,16 @@ files = [
 referencing = ">=0.31.0"
 
 [[package]]
+name = "now"
+version = "0.0.6"
+description = "Record what you are doing SIMPLY from the command line"
+optional = false
+python-versions = "*"
+files = [
+    {file = "now-0.0.6.tar.gz", hash = "sha256:0bc9d56c03548d383c49eb53dcefaa65c11354dd87bc35992ca46436dc2aa642"},
+]
+
+[[package]]
 name = "packaging"
 version = "24.2"
 description = "Core utilities for Python packages"
@@ -928,4 +938,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "7c384d477136934a16b8fd0f6d56ce3ab6bce3b7ea1881352490c07ee65ddc66"
+content-hash = "26bacfd83ceab2f4a06c26ce8d0c771b1d4f9096bc13c330e776a5a00be5a98b"

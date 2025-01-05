@@ -1,9 +1,11 @@
 import time
+from datetime import timedelta
 
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework import status
 
 from books_service.models import Book
@@ -38,8 +40,8 @@ def sample_borrowing(user, book, **params):
     defaults = {
         "book": book,
         "user": user,
-        "borrow_date": now(),
-        "due_date": now() + timedelta(days=7),
+        "borrow_date": timezone.now(),
+        "due_date": timezone.now() + timedelta(days=7),
     }
     defaults.update(params)
     return Borrowing.objects.create(**defaults)
@@ -110,7 +112,7 @@ class BorrowingCacheTests(TestCase):
 
         # Check if the book's inventory was updated
         self.book.refresh_from_db()
-        self.assertEqual(self.book.inventory, 11)  # Book's inventory should increase by 1
+        self.assertEqual(self.book.inventory, 11)
 
         # Ensure the actual return date is set
         borrowing.refresh_from_db()
