@@ -8,11 +8,16 @@ from telebot import TeleBot, types
 from borrowings.models import Borrowing
 
 bot = TeleBot(settings.TELEGRAM_BOT_API_KEY)
-if os.environ.get("DEBUG"):
-    bot.set_webhook(url=f"https://{os.environ["NGROK_HOST"]}/api/telegram/")
+if os.getenv("DEBUG") == "True":
+    ngrok_host = os.getenv("NGROK_HOST")
+    if ngrok_host:
+        bot.set_webhook(url=f"https://{os.environ["NGROK_HOST"]}/api/telegram/")
+    else:
+        raise ValueError("NGROK_HOST is not set. Please define it in your environment.")
 else:
+    pass
     # ToDo add prod URL to prod settings
-    bot.set_webhook(url="Prod-URL")
+    # bot.set_webhook(url=f"https://{os.environ["PROD-LINK"]}/api/telegram/")
 sleep(3)
 
 @bot.message_handler(commands=["help", "start"])
