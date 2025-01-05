@@ -12,7 +12,8 @@ class BookSerializer(serializers.ModelSerializer):
             "author",
             "cover",
             "inventory",
-            "daily_fee"
+            "daily_fee",
+            "image",
         )
 
 
@@ -22,7 +23,8 @@ class BookListSerializer(BookSerializer):
         fields = (
             "id",
             "title",
-            "author"
+            "author",
+            "image",
         )
 
 
@@ -40,7 +42,8 @@ class BookDetailSerializer(BookSerializer):
             "cover_display",
             "inventory",
             "daily_fee",
-            "total_value"
+            "total_value",
+            "image",
         )
         read_only_fields = ("cover_display", "total_value")
 
