@@ -42,3 +42,9 @@ else:
             "NAME": BASE_DIR / "db.sqlite3", # noqa
         }
     }
+
+
+ALLOWED_HOSTS = [
+    "localhost",
+    os.environ["NGROK_HOST"]
+]

@@ -36,6 +36,9 @@ jobs:
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
           STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
+          TELEGRAM_BOT_API_KEY: ${{ secrets.TELEGRAM_BOT_API_KEY }}
+          NGROK_HOST: ${{ secrets.NGROK_HOST }}
+          TG_ADMIN_CHAT: ${{ secrets.TG_ADMIN_CHAT }}
       - name: Run migrations
         run: poetry run python manage.py migrate
         env:
@@ -47,6 +50,9 @@ jobs:
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
           STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
+          TELEGRAM_BOT_API_KEY: ${{ secrets.TELEGRAM_BOT_API_KEY }}
+          NGROK_HOST: ${{ secrets.NGROK_HOST }}
+          TG_ADMIN_CHAT: ${{ secrets.TG_ADMIN_CHAT }}
       - name: Run tests
         run: poetry run python manage.py test
         env:
@@ -58,3 +64,6 @@ jobs:
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
           STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
+          TELEGRAM_BOT_API_KEY: ${{ secrets.TELEGRAM_BOT_API_KEY }}
+          NGROK_HOST: ${{ secrets.NGROK_HOST }}
+          TG_ADMIN_CHAT: ${{ secrets.TG_ADMIN_CHAT }}

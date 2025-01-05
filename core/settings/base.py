@@ -147,3 +147,5 @@ STRIPE_PUBLIC_KEY = os.environ["STRIPE_PUBLIC_KEY"]
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = "/files/media"
+
+TELEGRAM_BOT_API_KEY = os.environ.get("TELEGRAM_BOT_API_KEY", "")
