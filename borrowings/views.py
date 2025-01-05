@@ -16,14 +16,20 @@ from borrowings.serializers import (
     BorrowingListSerializer,
     BorrowingSerializer,
 )
+from payments.utils import create_stripe_session
 
 
 class BorrowingListView(generics.ListCreateAPIView):
-    queryset = Borrowing.objects.select_related("book", "user")
+    queryset = Borrowing.objects.select_related(
+        "book",
+        "user"
+    ).prefetch_related("payments")
+
     serializer_class = BorrowingListSerializer
     permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
+
         book = serializer.validated_data["book"]
         if book.inventory <= 0:
             raise ValidationError({"error": "The book is not available for borrowing."})
@@ -89,7 +95,10 @@ class BorrowingListView(generics.ListCreateAPIView):
 
 
 class BorrowingDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Borrowing.objects.select_related("book", "user")
+    queryset = Borrowing.objects.select_related(
+        "book",
+        "user"
+    ).prefetch_related("payments")
     serializer_class = BorrowingDetailSerializer
     permission_classes = (IsAuthenticated,)
 
