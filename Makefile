@@ -20,6 +20,8 @@ help:
 	@echo "  loaddata  Load initial data"
 	@echo "  up build   Start the application with build"
 	@echo "  build     Build the application"
+	@echo "  test_cache_django   Test Django cache"
+	@echo "  test_cache_redis    Test Redis cache"
 
 .PHONY: deps
 deps:
@@ -64,3 +66,21 @@ loaddata:
 .PHONY: clean
 clean:
 	find . -name "__pycache__" -exec rm -rf {} +
+
+# Redis Commands
+.PHONY: start-redis
+start-redis:
+	${DOCKER_COMPOSE} up -d redis
+
+.PHONY: stop-redis
+stop-redis:
+	${DOCKER_COMPOSE} down redis
+
+.PHONY: flush-redis
+flush-redis:
+	${DOCKER_COMPOSE} exec redis redis-cli flushall
+
+.PHONY: status-redis
+status-redis:
+	${DOCKER_COMPOSE} exec redis redis-cli ping
+
