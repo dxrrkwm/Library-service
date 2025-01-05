@@ -49,3 +49,9 @@ class BookDetailSerializer(BookSerializer):
 
     def get_total_value(self, obj):
         return obj.inventory * obj.daily_fee
+
+
+class BookImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = ("id", "image")
