@@ -10,6 +10,7 @@ from books_service.serializers import (
     BookDetailSerializer,
     BookListSerializer,
     BookSerializer,
+    BookImageSerializer,
 )
 
 
@@ -33,8 +34,8 @@ class BookViewSet(viewsets.ModelViewSet):
         permission_classes=[IsAdminUser],
     )
     def upload_image(self, request, pk=None):
-        movie = self.get_object()
-        serializer = self.get_serializer(movie, data=request.data)
+        book = self.get_object()
+        serializer = self.get_serializer(book, data=request.data)
 
         if serializer.is_valid():
             serializer.save()
@@ -43,4 +44,7 @@ class BookViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get_serializer_class(self):
+        if self.action == "upload_image":
+            return BookImageSerializer
+
         return self.action_serializer_classes.get(self.action, BookSerializer)
