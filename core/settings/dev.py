@@ -42,3 +42,10 @@ else:
             "NAME": BASE_DIR / "db.sqlite3", # noqa
         }
     }
+
+TELEGRAM_BOT_API_KEY = os.environ["TELEGRAM_BOT_API_KEY"]
+
+ALLOWED_HOSTS = [
+    "localhost",
+    os.environ["NGROK_HOST"]
+]
