@@ -13,20 +13,30 @@ from borrowings.serializers import (
     BorrowingListSerializer,
     BorrowingSerializer,
 )
+from payments.utils import create_stripe_session
 
 
 class BorrowingListView(generics.ListCreateAPIView):
-    queryset = Borrowing.objects.select_related("book", "user")
+    queryset = Borrowing.objects.select_related(
+        "book",
+        "user"
+    ).prefetch_related("payments")
+
     serializer_class = BorrowingListSerializer
     permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
-        book = serializer.validated_data["book"]
-        if book.inventory <= 0:
-            return ValidationError({"error": "The book is not available for borrowing."})
-        book.inventory -= 1
-        book.save()
-        serializer.save()
+        with transaction.atomic():
+            book = serializer.validated_data["book"]
+            if book.inventory <= 0:
+                raise ValidationError({"error": "The book is not available for borrowing."})
+            book.inventory -= 1
+            book.save()
+
+            borrowing = serializer.save(user=self.request.user)
+
+            create_stripe_session(borrowing)
+            return borrowing
 
     @staticmethod
     def _params_to_ints(params):
@@ -76,9 +86,13 @@ class BorrowingListView(generics.ListCreateAPIView):
 
 
 class BorrowingDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Borrowing.objects.select_related("book", "user")
+    queryset = Borrowing.objects.select_related(
+        "book",
+        "user"
+    ).prefetch_related("payments")
     serializer_class = BorrowingDetailSerializer
     permission_classes = (IsAuthenticated,)
+
     def get_queryset(self):
         if not (self.request.user.is_staff or self.request.user.is_superuser):
             self.queryset = self.queryset.filter(user=self.request.user)
@@ -87,6 +101,7 @@ class BorrowingDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class ReturnBookView(APIView):
     permission_classes = (IsAuthenticated,)
+
     def post(self, request, pk):
         try:
             borrowing = Borrowing.objects.get(pk=pk)
