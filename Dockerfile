@@ -23,9 +23,13 @@ RUN adduser \
     --no-create-home \
     appuser
 
-USER appuser
-
 COPY . .
+RUN mkdir -p /files/media
+
+RUN chown -R appuser /files/media
+RUN chmod -R 755 /files/media
+
+USER appuser
 
 ENV VIRTUAL_ENV=/app/.venv \
     PATH="/app/.venv/bin:$PATH"
