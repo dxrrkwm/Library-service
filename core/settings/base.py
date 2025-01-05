@@ -145,7 +145,7 @@ AUTH_USER_MODEL = "users.User"
 STRIPE_SECRET_KEY = os.environ["STRIPE_SECRET_KEY"]
 STRIPE_PUBLIC_KEY = os.environ["STRIPE_PUBLIC_KEY"]
 
-# Django Cache Configuration using Redis
+# Django Cache Configuration using Redis at the backend
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
