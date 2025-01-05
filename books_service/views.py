@@ -1,4 +1,4 @@
-from rest_framework import viewsets, status
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
@@ -8,9 +8,9 @@ from books_service.models import Book
 from books_service.permissions import IsAdminOrReadOnly
 from books_service.serializers import (
     BookDetailSerializer,
+    BookImageSerializer,
     BookListSerializer,
     BookSerializer,
-    BookImageSerializer,
 )
 
 
