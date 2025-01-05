@@ -144,3 +144,6 @@ AUTH_USER_MODEL = "users.User"
 
 STRIPE_SECRET_KEY = os.environ["STRIPE_SECRET_KEY"]
 STRIPE_PUBLIC_KEY = os.environ["STRIPE_PUBLIC_KEY"]
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = "/files/media"
