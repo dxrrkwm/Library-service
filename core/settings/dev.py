@@ -43,7 +43,6 @@ else:
         }
     }
 
-TELEGRAM_BOT_API_KEY = os.environ["TELEGRAM_BOT_API_KEY"]
 
 ALLOWED_HOSTS = [
     "localhost",
