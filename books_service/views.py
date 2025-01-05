@@ -24,7 +24,8 @@ class BookViewSet(viewsets.ModelViewSet):
         "retrieve": BookDetailSerializer,
         "create": BookSerializer,
         "update": BookSerializer,
-        "partial_update": BookSerializer
+        "partial_update": BookSerializer,
+        "upload_image": BookImageSerializer,
     }
 
     @action(
@@ -58,7 +59,4 @@ class BookViewSet(viewsets.ModelViewSet):
         return queryset.distinct()
 
     def get_serializer_class(self):
-        if self.action == "upload_image":
-            return BookImageSerializer
-
         return self.action_serializer_classes.get(self.action, BookSerializer)
