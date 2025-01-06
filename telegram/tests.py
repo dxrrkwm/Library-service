@@ -63,10 +63,18 @@ class TelegramBotTest(APITestCase):
             money_to_pay="12.11"
         )
 
-        payment.status = Payment.PaymentStatus.Paid
+        payment.status = Payment.PaymentStatus.PAID
         payment.save()
 
         mock_send_message.assert_called_with(
             chat_id="123456",
             text=f"{payment} user email: {payment.borrowing.user.email} Payment closed"
+        )
+
+        payment.status = Payment.PaymentStatus.CANCELED
+        payment.save()
+
+        mock_send_message.assert_called_with(
+            chat_id="123456",
+            text=f"Canceled {payment} user email: {payment.borrowing.user.email} Payment closed"
         )
