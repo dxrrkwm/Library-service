@@ -21,8 +21,6 @@ class BorrowingListView(generics.ListCreateAPIView):
         "book",
         "user"
     ).prefetch_related("payments")
-
-    serializer_class = BorrowingListSerializer
     permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
@@ -35,7 +33,6 @@ class BorrowingListView(generics.ListCreateAPIView):
 
             borrowing = serializer.save(user=self.request.user)
 
-            create_stripe_session(borrowing)
             return borrowing
 
     @staticmethod
@@ -63,7 +60,6 @@ class BorrowingListView(generics.ListCreateAPIView):
     def get_serializer_class(self):
         if self.request.method == "GET":
             return BorrowingListSerializer
-
         return BorrowingSerializer
 
     @extend_schema(
@@ -90,13 +86,33 @@ class BorrowingDetailView(generics.RetrieveUpdateDestroyAPIView):
         "book",
         "user"
     ).prefetch_related("payments")
-    serializer_class = BorrowingDetailSerializer
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         if not (self.request.user.is_staff or self.request.user.is_superuser):
             self.queryset = self.queryset.filter(user=self.request.user)
         return self.queryset
+
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return BorrowingDetailSerializer
+        return BorrowingSerializer
+
+    def update(self, request, *args, **kwargs):
+        borrowing = self.get_object()
+
+        if borrowing.actual_return_date:
+            raise ValidationError({"error": "The book has already been returned."})
+
+        serializer = self.get_serializer(
+            borrowing,
+            data=request.data,
+            partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data)
 
 
 class ReturnBookView(APIView):
@@ -116,6 +132,8 @@ class ReturnBookView(APIView):
             borrowing.book.inventory += 1
             borrowing.book.save()
             borrowing.save()
+
+        create_stripe_session(borrowing, request)
 
         return Response(
             {"message": "The book has been successfully returned."},
