@@ -15,6 +15,14 @@ jobs:
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
+        env:
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -39,6 +47,11 @@ jobs:
           TELEGRAM_BOT_API_KEY: ${{ secrets.TELEGRAM_BOT_API_KEY }}
           NGROK_HOST: ${{ secrets.NGROK_HOST }}
           TG_ADMIN_CHAT: ${{ secrets.TG_ADMIN_CHAT }}
+          REDIS_HOST: redis
+          REDIS_PORT: 6379
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+
+
       - name: Run migrations
         run: poetry run python manage.py migrate
         env:
@@ -53,6 +66,11 @@ jobs:
           TELEGRAM_BOT_API_KEY: ${{ secrets.TELEGRAM_BOT_API_KEY }}
           NGROK_HOST: ${{ secrets.NGROK_HOST }}
           TG_ADMIN_CHAT: ${{ secrets.TG_ADMIN_CHAT }}
+          REDIS_HOST: redis
+          REDIS_PORT: 6379
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+
+
       - name: Run tests
         run: poetry run python manage.py test
         env:
@@ -67,3 +85,6 @@ jobs:
           TELEGRAM_BOT_API_KEY: ${{ secrets.TELEGRAM_BOT_API_KEY }}
           NGROK_HOST: ${{ secrets.NGROK_HOST }}
           TG_ADMIN_CHAT: ${{ secrets.TG_ADMIN_CHAT }}
+          REDIS_HOST: redis
+          REDIS_PORT: 6379
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
