@@ -149,3 +149,15 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = "/files/media"
 
 TELEGRAM_BOT_API_KEY = os.environ.get("TELEGRAM_BOT_API_KEY", "")
+
+# Django Cache Configuration using Redis as the backend
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD": os.environ["REDIS_PASSWORD"],
+        },
+    }
+}
