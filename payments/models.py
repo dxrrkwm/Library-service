@@ -8,6 +8,7 @@ class Payment(models.Model):
     class PaymentStatus(models.TextChoices):
         PENDING = "PENDING", "Pending"
         PAID = "PAID", "Paid"
+        CANCELED = "CANCELED", "Canceled"
 
     class PaymentType(models.TextChoices):
         PAYMENT = "PAYMENT", "Payment"
