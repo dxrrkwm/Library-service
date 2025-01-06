@@ -19,9 +19,7 @@ jobs:
         image: redis:latest
         ports:
           - 6379:6379
-        env:
-          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-          command: redis-server --requirepass ${{ secrets.REDIS_PASSWORD }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -46,8 +44,8 @@ jobs:
           TELEGRAM_BOT_API_KEY: ${{ secrets.TELEGRAM_BOT_API_KEY }}
           NGROK_HOST: ${{ secrets.NGROK_HOST }}
           TG_ADMIN_CHAT: ${{ secrets.TG_ADMIN_CHAT }}
-          REDIS_HOST: ${{ secrets.REDIS_HOST }}
-          REDIS_PORT: ${{ secrets.REDIS_PORT }}
+          REDIS_HOST: redis
+          REDIS_PORT: 6379
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
 
       - name: Run migrations
@@ -64,8 +62,8 @@ jobs:
           TELEGRAM_BOT_API_KEY: ${{ secrets.TELEGRAM_BOT_API_KEY }}
           NGROK_HOST: ${{ secrets.NGROK_HOST }}
           TG_ADMIN_CHAT: ${{ secrets.TG_ADMIN_CHAT }}
-          REDIS_HOST: ${{ secrets.REDIS_HOST }}
-          REDIS_PORT: ${{ secrets.REDIS_PORT }}
+          REDIS_HOST: redis
+          REDIS_PORT: 6379
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
 
       - name: Run tests
@@ -82,6 +80,6 @@ jobs:
           TELEGRAM_BOT_API_KEY: ${{ secrets.TELEGRAM_BOT_API_KEY }}
           NGROK_HOST: ${{ secrets.NGROK_HOST }}
           TG_ADMIN_CHAT: ${{ secrets.TG_ADMIN_CHAT }}
-          REDIS_HOST: ${{ secrets.REDIS_HOST }}
-          REDIS_PORT: ${{ secrets.REDIS_PORT }}
+          REDIS_HOST: redis
+          REDIS_PORT: 6379
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
