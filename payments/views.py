@@ -101,6 +101,12 @@ class PaymentListRetrieveViewSet(
 
         payment = get_object_or_404(Payment, session_id=session_id)
 
+        if payment.status.CANCELED:
+            return Response(
+                {"error": "Payment was already canceled"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         borrow_date = payment.borrowing.borrow_date
 
         if timezone.now().date() - borrow_date > timezone.timedelta(hours=24):
@@ -109,7 +115,7 @@ class PaymentListRetrieveViewSet(
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        payment.status = Payment.PaymentStatus.PENDING
+        payment.status = Payment.PaymentStatus.CANCELED
         payment.save()
 
         create_stripe_session(payment.borrowing, request)
