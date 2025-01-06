@@ -8,7 +8,7 @@ from core.settings.base import INSTALLED_APPS, MIDDLEWARE
 load_dotenv()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "fjsdlfjsdfhdaidhaodaklasdjaslaldnawloijzcxvme"
@@ -46,5 +46,6 @@ else:
 
 ALLOWED_HOSTS = [
     "localhost",
+    "127.0.0.1",
     os.environ["NGROK_HOST"]
 ]
