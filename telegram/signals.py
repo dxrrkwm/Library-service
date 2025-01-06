@@ -10,7 +10,7 @@ from telegram.bot_handler import bot
 
 @receiver([post_save], sender=Borrowing)
 def actual_borrowings(sender, instance, **kwargs):
-    new_borrowing = Borrowing.objects.last()
+    new_borrowing = instance
     text = (f"user email: {new_borrowing.user.email} "
             f"book: {new_borrowing.book} "
             f"return to: {new_borrowing.expected_return_date}")
