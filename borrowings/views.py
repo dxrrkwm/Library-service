@@ -1,3 +1,4 @@
+import stripe
 from django.db import transaction
 from django.utils.timezone import now
 from drf_spectacular.utils import OpenApiParameter, extend_schema
@@ -21,8 +22,6 @@ class BorrowingListView(generics.ListCreateAPIView):
         "book",
         "user"
     ).prefetch_related("payments")
-
-    serializer_class = BorrowingListSerializer
     permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
@@ -63,7 +62,6 @@ class BorrowingListView(generics.ListCreateAPIView):
     def get_serializer_class(self):
         if self.request.method == "GET":
             return BorrowingListSerializer
-
         return BorrowingSerializer
 
     @extend_schema(
@@ -90,13 +88,47 @@ class BorrowingDetailView(generics.RetrieveUpdateDestroyAPIView):
         "book",
         "user"
     ).prefetch_related("payments")
-    serializer_class = BorrowingDetailSerializer
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         if not (self.request.user.is_staff or self.request.user.is_superuser):
             self.queryset = self.queryset.filter(user=self.request.user)
         return self.queryset
+
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return BorrowingDetailSerializer
+        return BorrowingSerializer
+
+    def update(self, request, *args, **kwargs):
+        borrowing = self.get_object()
+
+        if borrowing.actual_return_date:
+            raise ValidationError({"error": "The book has already been returned."})
+
+        serializer = self.get_serializer(
+            borrowing,
+            data=request.data,
+            partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+
+        with transaction.atomic():
+            current_session = borrowing.payments.filter(status="PENDING").first()
+            if current_session:
+                try:
+                    stripe.checkout.Session.expire(current_session.session_id)
+                except stripe.error.StripeError as e:
+                    raise ValidationError(
+                        {"error": f"Failed to expire the session: {str(e)}"}
+                    )
+
+            borrowing.payments.filter(status="PENDING").delete()
+            borrowing = serializer.save()
+
+            create_stripe_session(borrowing, request)
+
+        return Response(serializer.data)
 
 
 class ReturnBookView(APIView):
