@@ -19,7 +19,7 @@ def actual_borrowings(sender, instance, **kwargs):
 
 @receiver(post_save, sender=Payment)
 def closed_payments(sender, instance, **kwargs):
-    if instance.status == Payment.PaymentStatus.Paid:
+    if instance.status == Payment.PaymentStatus.PAID:
         bot.send_message(
             chat_id=os.environ["TG_ADMIN_CHAT"],
             text=f"{instance} user email: {instance.borrowing.user.email} Payment closed"

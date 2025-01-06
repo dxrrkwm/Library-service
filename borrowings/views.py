@@ -35,7 +35,7 @@ class BorrowingListView(generics.ListCreateAPIView):
 
             borrowing = serializer.save(user=self.request.user)
 
-            create_stripe_session(borrowing)
+            create_stripe_session(borrowing, self.request)
             return borrowing
 
     @staticmethod
