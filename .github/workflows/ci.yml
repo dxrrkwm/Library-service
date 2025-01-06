@@ -22,7 +22,6 @@ jobs:
         env:
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
 
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -51,7 +50,6 @@ jobs:
           REDIS_PORT: ${{ secrets.REDIS_PORT }}
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
 
-
       - name: Run migrations
         run: poetry run python manage.py migrate
         env:
@@ -69,7 +67,6 @@ jobs:
           REDIS_HOST: ${{ secrets.REDIS_HOST }}
           REDIS_PORT: ${{ secrets.REDIS_PORT }}
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-
 
       - name: Run tests
         run: poetry run python manage.py test
