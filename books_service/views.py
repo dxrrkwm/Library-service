@@ -1,3 +1,5 @@
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser
@@ -60,3 +62,8 @@ class BookViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         return self.action_serializer_classes.get(self.action, BookSerializer)
+
+    @method_decorator(cache_page(60 * 15))
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+        return response
