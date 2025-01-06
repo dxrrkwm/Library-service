@@ -10,11 +10,12 @@ from telegram.bot_handler import bot
 
 @receiver([post_save], sender=Borrowing)
 def actual_borrowings(sender, instance, **kwargs):
-    new_borrowing = Borrowing.objects.last()
-    text = (f"user email: {new_borrowing.user.email} "
-            f"book: {new_borrowing.book} "
-            f"return to: {new_borrowing.expected_return_date}")
-    bot.send_message(chat_id=os.environ["TG_ADMIN_CHAT"], text=text)
+    new_borrowing = instance
+    if not new_borrowing.actual_return_date:
+        text = (f"user email: {new_borrowing.user.email} "
+                f"book: {new_borrowing.book} "
+                f"return to: {new_borrowing.expected_return_date}")
+        bot.send_message(chat_id=os.environ["TG_ADMIN_CHAT"], text=text)
 
 @receiver(post_save, sender=Payment)
 def closed_payments(sender, instance, **kwargs):
@@ -22,4 +23,10 @@ def closed_payments(sender, instance, **kwargs):
         bot.send_message(
             chat_id=os.environ["TG_ADMIN_CHAT"],
             text=f"{instance} user email: {instance.borrowing.user.email} Payment closed"
+        )
+
+    if instance.status == Payment.PaymentStatus.CANCELED:
+        bot.send_message(
+            chat_id=os.environ["TG_ADMIN_CHAT"],
+            text=f"Canceled {instance} user email: {instance.borrowing.user.email} Payment closed"
         )
