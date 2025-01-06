@@ -21,7 +21,7 @@ jobs:
           - 6379:6379
         env:
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-
+          command: redis-server --requirepass ${{ secrets.REDIS_PASSWORD }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
