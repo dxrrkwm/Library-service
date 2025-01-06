@@ -11,7 +11,6 @@ from rest_framework.test import APIClient
 from books_service.models import Book
 
 BOOK_URL = reverse("books_service:book-list")
-# BORROWING = reverse("borrowings:borrowing-detail")
 
 
 def sample_book(**params):
@@ -24,25 +23,6 @@ def sample_book(**params):
     defaults.update(params)
 
     return Book.objects.create(**defaults)
-
-
-# def sample_borrowing(**params):
-#     book = sample_book()
-#
-#     cinema_hall = Borrowing.objects.create(
-#         expected_return_date=datetime.today(),
-#         book=book,
-#         user=
-#     )
-#
-#     defaults = {
-#         "show_time": "2022-06-02 14:00:00",
-#         "movie": None,
-#         "cinema_hall": cinema_hall,
-#     }
-#     defaults.update(params)
-#
-#     return Borrowing.objects.create(**defaults)
 
 
 def image_upload_url(book_id):
@@ -127,14 +107,3 @@ class BookImageUploadTests(TestCase):
         res = self.client.get(BOOK_URL)
 
         self.assertIn("image", res.data[0].keys())
-
-    # def test_image_url_is_shown_on_borrowings_detail(self):
-    #     url = image_upload_url(self.book.id)
-    #     with tempfile.NamedTemporaryFile(suffix=".jpg") as ntf:
-    #         img = Image.new("RGB", (10, 10))
-    #         img.save(ntf, format="JPEG")
-    #         ntf.seek(0)
-    #         self.client.post(url, {"image": ntf}, format="multipart")
-    #     res = self.client.get(reverse("borrowings:borrowing-detail", args=[self.book.id]))
-    #     print(res.data)
-    #     self.assertIn("image", res.data[0].keys())
