@@ -121,7 +121,7 @@ class BorrowingDetailView(generics.RetrieveUpdateDestroyAPIView):
                 except stripe.error.StripeError as e:
                     raise ValidationError(
                         {"error": f"Failed to expire the session: {str(e)}"}
-                    )
+                    ) from e
 
             borrowing.payments.filter(status="PENDING").delete()
             borrowing = serializer.save()
