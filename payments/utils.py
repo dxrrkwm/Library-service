@@ -14,6 +14,14 @@ def create_stripe_session(borrowing, request):
 
     total_amount = borrowing.book.daily_fee * days_to_borrow
 
+    success_url = request.build_absolute_uri(
+        reverse("payments:payments-success")
+    ) + "?session_id={CHECKOUT_SESSION_ID}"
+
+    cancel_url = request.build_absolute_uri(
+        reverse("payments:payments-cancel")
+    ) + "?session_id={CHECKOUT_SESSION_ID}"
+
     session = stripe.checkout.Session.create(
         payment_method_types=["card"],
         line_items=[
@@ -29,17 +37,15 @@ def create_stripe_session(borrowing, request):
             },
         ],
         mode="payment",
-        success_url=request.build_absolute_uri(
-            reverse("payments:payments-success") + "?session_id={CHECKOUT_SESSION_ID}"
-        ),
-        cancel_url=request.build_absolute_uri("/payments/cancel/"),
+        success_url=success_url,
+        cancel_url=cancel_url
     )
 
     payment = Payment.objects.create(
         borrowing=borrowing,
         session_url=session.url,
         session_id=session.id,
-        money_to_pay=total_amount,
+        money_to_pay=total_amount
     )
 
     return payment

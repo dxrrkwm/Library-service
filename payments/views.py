@@ -1,4 +1,5 @@
 import stripe
+from django.utils import timezone
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -11,6 +12,7 @@ from payments.serializers import (
     PaymentListSerializer,
     PaymentSerializer,
 )
+from payments.utils import create_stripe_session
 
 
 class PaymentListRetrieveViewSet(
@@ -82,3 +84,41 @@ class PaymentListRetrieveViewSet(
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+    @action(
+        methods=["GET"],
+        detail=False,
+        url_path="cancel",
+        url_name="cancel"
+    )
+    def cancel(self, request):
+        session_id = request.query_params.get("session_id")
+
+        if not session_id:
+            return Response(
+                {"error": "Session ID is missing"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        payment = get_object_or_404(Payment, session_id=session_id)
+
+        borrow_date = payment.borrowing.borrow_date
+
+        if timezone.now().date() - borrow_date > timezone.timedelta(hours=24):
+            return Response(
+                {"error": "Session expired"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        payment.status = Payment.PaymentStatus.PENDING
+        payment.save()
+
+        create_stripe_session(payment.borrowing, request)
+
+        return Response(
+            {
+                "message": "Payment was canceled",
+                "payment": payment.id,
+                "payment_status": payment.status
+            },
+            status=status.HTTP_200_OK
+        )
