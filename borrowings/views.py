@@ -1,4 +1,3 @@
-import stripe
 from django.db import transaction
 from django.utils.timezone import now
 from drf_spectacular.utils import OpenApiParameter, extend_schema
@@ -34,7 +33,6 @@ class BorrowingListView(generics.ListCreateAPIView):
 
             borrowing = serializer.save(user=self.request.user)
 
-            create_stripe_session(borrowing, self.request)
             return borrowing
 
     @staticmethod
@@ -112,21 +110,7 @@ class BorrowingDetailView(generics.RetrieveUpdateDestroyAPIView):
             partial=True
         )
         serializer.is_valid(raise_exception=True)
-
-        with transaction.atomic():
-            current_session = borrowing.payments.filter(status="PENDING").first()
-            if current_session:
-                try:
-                    stripe.checkout.Session.expire(current_session.session_id)
-                except stripe.error.StripeError as e:
-                    raise ValidationError(
-                        {"error": f"Failed to expire the session: {str(e)}"}
-                    ) from e
-
-            borrowing.payments.filter(status="PENDING").delete()
-            borrowing = serializer.save()
-
-            create_stripe_session(borrowing, request)
+        serializer.save()
 
         return Response(serializer.data)
 
@@ -148,6 +132,8 @@ class ReturnBookView(APIView):
             borrowing.book.inventory += 1
             borrowing.book.save()
             borrowing.save()
+
+        create_stripe_session(borrowing, request)
 
         return Response(
             {"message": "The book has been successfully returned."},

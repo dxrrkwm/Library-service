@@ -101,7 +101,7 @@ class PaymentListRetrieveViewSet(
 
         payment = get_object_or_404(Payment, session_id=session_id)
 
-        if payment.status.CANCELED:
+        if payment.status == Payment.PaymentStatus.CANCELED:
             return Response(
                 {"error": "Payment was already canceled"},
                 status=status.HTTP_400_BAD_REQUEST
