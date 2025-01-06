@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 import stripe
 from django.conf import settings
 from rest_framework.reverse import reverse
@@ -7,12 +9,21 @@ from payments.models import Payment
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
-def create_stripe_session(borrowing, request):
-    days_to_borrow = (
-            borrowing.expected_return_date - borrowing.borrow_date
-    ).days
+FINE_MULTIPLIER = 2
 
-    total_amount = borrowing.book.daily_fee * days_to_borrow
+
+def calculate_fine_for_borrowing(borrowing, fine_multiplier=FINE_MULTIPLIER):
+    if borrowing.actual_return_date and borrowing.actual_return_date > borrowing.expected_return_date:
+        overdue_days = (
+            borrowing.actual_return_date - borrowing.expected_return_date
+        ).days
+        fine_amount = Decimal(overdue_days * borrowing.book.daily_fee * fine_multiplier)
+        return fine_amount
+    return (borrowing.expected_return_date - borrowing.borrow_date).days * borrowing.book.daily_fee
+
+
+def create_stripe_session(borrowing, request):
+    total_amount = calculate_fine_for_borrowing(borrowing)
 
     success_url = request.build_absolute_uri(
         reverse("payments:payments-success")
