@@ -11,10 +11,11 @@ from telegram.bot_handler import bot
 @receiver([post_save], sender=Borrowing)
 def actual_borrowings(sender, instance, **kwargs):
     new_borrowing = instance
-    text = (f"user email: {new_borrowing.user.email} "
-            f"book: {new_borrowing.book} "
-            f"return to: {new_borrowing.expected_return_date}")
-    bot.send_message(chat_id=os.environ["TG_ADMIN_CHAT"], text=text)
+    if not new_borrowing.actual_return_date:
+        text = (f"user email: {new_borrowing.user.email} "
+                f"book: {new_borrowing.book} "
+                f"return to: {new_borrowing.expected_return_date}")
+        bot.send_message(chat_id=os.environ["TG_ADMIN_CHAT"], text=text)
 
 @receiver(post_save, sender=Payment)
 def closed_payments(sender, instance, **kwargs):
