@@ -8,7 +8,7 @@ from core.settings.base import INSTALLED_APPS, MIDDLEWARE
 load_dotenv()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "fjsdlfjsdfhdaidhaodaklasdjaslaldnawloijzcxvme"
