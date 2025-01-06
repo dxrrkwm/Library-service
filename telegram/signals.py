@@ -24,3 +24,9 @@ def closed_payments(sender, instance, **kwargs):
             chat_id=os.environ["TG_ADMIN_CHAT"],
             text=f"{instance} user email: {instance.borrowing.user.email} Payment closed"
         )
+
+    if instance.status == Payment.PaymentStatus.CANCELED:
+        bot.send_message(
+            chat_id=os.environ["TG_ADMIN_CHAT"],
+            text=f"Canceled {instance} user email: {instance.borrowing.user.email} Payment closed"
+        )
