@@ -1,12 +1,13 @@
 import stripe
-from django.contrib.auth import settings
+from django.conf import settings
+from rest_framework.reverse import reverse
 
 from payments.models import Payment
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
-def create_stripe_session(borrowing):
+def create_stripe_session(borrowing, request):
     days_to_borrow = (
             borrowing.expected_return_date - borrowing.borrow_date
     ).days
@@ -28,8 +29,10 @@ def create_stripe_session(borrowing):
             },
         ],
         mode="payment",
-        success_url="http://localhost:8000/api/payments/",
-        cancel_url="http://localhost:8000/api/payments/",
+        success_url=request.build_absolute_uri(
+            reverse("payments:payments-success") + "?session_id={CHECKOUT_SESSION_ID}"
+        ),
+        cancel_url=request.build_absolute_uri("/payments/cancel/"),
     )
 
     payment = Payment.objects.create(
