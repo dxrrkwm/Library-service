@@ -86,6 +86,6 @@ jobs:
           TELEGRAM_BOT_API_KEY: ${{ secrets.TELEGRAM_BOT_API_KEY }}
           NGROK_HOST: ${{ secrets.NGROK_HOST }}
           TG_ADMIN_CHAT: ${{ secrets.TG_ADMIN_CHAT }}
-          REDIS_HOST: redis
+          REDIS_HOST: 127.0.0.1
           REDIS_PORT: 6379
           REDIS_PASSWORD: mysecret
