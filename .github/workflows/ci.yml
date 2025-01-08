@@ -72,7 +72,8 @@ jobs:
 
 
       - name: Run tests
-        run: poetry run python manage.py test
+        run: "echo ${{ secrets.REDIS_PASSWORD }} && 
+             poetry run python manage.py test"
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           POSTGRES_HOST: 127.0.0.1

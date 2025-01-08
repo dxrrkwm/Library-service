@@ -61,6 +61,6 @@ def send_borrowings_today(message):
         out += string + "\n"
 
     if out == "":
-        bot.reply_to(message, "No borrowings found")
+        bot.reply_to(message, "No borrowings found" + str(message))
     else:
         bot.reply_to(message, out)
