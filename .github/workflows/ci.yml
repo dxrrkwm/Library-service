@@ -35,22 +35,6 @@ jobs:
           pip install --upgrade pip
           pip install poetry
           poetry install
-        env:
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          POSTGRES_HOST: 127.0.0.1
-          POSTGRES_PORT: 5432
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-          STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
-          TELEGRAM_BOT_API_KEY: ${{ secrets.TELEGRAM_BOT_API_KEY }}
-          NGROK_HOST: ${{ secrets.NGROK_HOST }}
-          TG_ADMIN_CHAT: ${{ secrets.TG_ADMIN_CHAT }}
-          REDIS_HOST: ${{ secrets.REDIS_HOST }}
-          REDIS_PORT: ${{ secrets.REDIS_PORT }}
-          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-
 
       - name: Run migrations
         run: poetry run python manage.py migrate
@@ -69,16 +53,6 @@ jobs:
           REDIS_HOST: ${{ secrets.REDIS_HOST }}
           REDIS_PORT: ${{ secrets.REDIS_PORT }}
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-
-      - name: Install Redis
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y redis-server
-          sudo systemctl start redis-server
-          sudo systemctl enable redis-server
-
-      - name: Verify Redis is running
-        run: redis-cli ping
 
       - name: Run tests
         run: "echo ${{ secrets.REDIS_PASSWORD }} && 
