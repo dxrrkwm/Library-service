@@ -20,7 +20,7 @@ jobs:
         ports:
           - 6379:6379
         env:
-          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          REDIS_PASSWORD: mysecret
 
 
     steps:
