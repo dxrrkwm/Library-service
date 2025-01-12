@@ -3,7 +3,7 @@ from datetime import datetime
 from django.conf import settings
 from telebot import TeleBot, types
 
-from borrowings.models import Borrowing # NOQA isort:skip
+from borrowings.models import Borrowing
 
 
 bot = TeleBot(settings.TELEGRAM_BOT_API_KEY)

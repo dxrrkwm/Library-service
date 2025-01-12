@@ -4,7 +4,7 @@ import telebot
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from telegram.bot_handler import bot # NOQA isort:skip
+from telegram.bot_handler import bot
 
 
 if os.getenv("DEBUG"):
