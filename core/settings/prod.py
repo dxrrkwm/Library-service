@@ -1,6 +1,7 @@
 import os
 
-from core.settings.base import *  # noqa
+from core.settings.base import *  # NOQA isort:skip
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False

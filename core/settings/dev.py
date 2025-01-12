@@ -1,7 +1,9 @@
 import os
 
 from core.settings.base import *  # noqa
-from core.settings.base import INSTALLED_APPS, MIDDLEWARE
+
+from core.settings.base import INSTALLED_APPS, MIDDLEWARE # NOQA isort:skip
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
