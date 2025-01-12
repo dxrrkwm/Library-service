@@ -15,7 +15,11 @@ def actual_borrowings(sender, instance, **kwargs):
         text = (f"user email: {new_borrowing.user.email} "
                 f"book: {new_borrowing.book} "
                 f"return to: {new_borrowing.expected_return_date}")
-        bot.send_message(chat_id=os.environ["TG_ADMIN_CHAT"], text=text)
+        try:
+            bot.send_message(chat_id=os.environ["TG_ADMIN_CHAT"], text=text)
+        except Exception as e:
+            print("Error sending message")
+            print(e)
 
 @receiver(post_save, sender=Payment)
 def closed_payments(sender, instance, **kwargs):
@@ -26,7 +30,11 @@ def closed_payments(sender, instance, **kwargs):
         )
 
     if instance.status == Payment.PaymentStatus.CANCELED:
-        bot.send_message(
+        try:
+            bot.send_message(
             chat_id=os.environ["TG_ADMIN_CHAT"],
-            text=f"Canceled {instance} user email: {instance.borrowing.user.email} Payment closed"
+            text=f"Payment Cancelled {instance} user email: {instance.borrowing.user.email}"
         )
+        except Exception as e:
+            print("Error sending message")
+            print(e)

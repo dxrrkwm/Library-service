@@ -76,5 +76,5 @@ class TelegramBotTest(APITestCase):
 
         mock_send_message.assert_called_with(
             chat_id="123456",
-            text=f"Canceled {payment} user email: {payment.borrowing.user.email} Payment closed"
+            text=f"Payment Cancelled {payment} user email: {payment.borrowing.user.email}"
         )
