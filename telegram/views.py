@@ -6,7 +6,6 @@ from django.views.decorators.csrf import csrf_exempt
 
 from telegram.bot_handler import bot
 
-
 if os.getenv("DEBUG"):
     ngrok_host = os.getenv("NGROK_HOST")
     if ngrok_host:

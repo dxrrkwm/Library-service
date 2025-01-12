@@ -5,7 +5,6 @@ from telebot import TeleBot, types
 
 from borrowings.models import Borrowing
 
-
 bot = TeleBot(settings.TELEGRAM_BOT_API_KEY)
 
 @bot.message_handler(commands=["help", "start"])
