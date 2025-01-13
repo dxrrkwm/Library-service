@@ -22,7 +22,7 @@ jobs:
         env:
           REDIS_PASSWORD: mysecret
         options: >-
-          --requirepass ${{ secrets.REDIS_PASSWORD }}
+          --requirepass mysecret
 
 
     steps:
