@@ -21,6 +21,7 @@ jobs:
           - 6379:6379
         env:
           REDIS_PASSWORD: mysecret
+        command: redis-server --requirepass ${{ secrets.REDIS_PASSWORD }}
 
 
     steps:
