@@ -30,7 +30,7 @@ jobs:
       - name: Verify that redis is up
         run: redis-cli ping
       - name: Setup redis
-        run: redis-cli shutdown && redis-server --requirepass mysecret
+        run: redis-cli shutdown && redis-server --requirepass mysecret --daemonize yes
       - name: Install Poetry and dependencies
         run: |
           pip install --upgrade pip
