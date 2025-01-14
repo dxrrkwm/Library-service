@@ -31,6 +31,15 @@ jobs:
         run: redis-cli ping
       - name: Setup redis
         run: redis-cli shutdown && redis-server --requirepass mysecret --daemonize yes
+      - name: Create the /files directory
+        run: |
+          mkdir -p /files
+      - name: Change folder permissions for /files
+        run: |
+          sudo chmod -R 777 /files
+      - name: Verify permissions
+        run: |
+          ls -ld /files
       - name: Install Poetry and dependencies
         run: |
           pip install --upgrade pip
