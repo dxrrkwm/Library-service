@@ -21,6 +21,8 @@ jobs:
           - 6379:6379
         env:
           REDIS_PASSWORD: mysecret
+          options: >-
+            redis-server --requirepass mysecret
 
 
     steps:
