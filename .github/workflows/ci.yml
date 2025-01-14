@@ -21,8 +21,6 @@ jobs:
           - 6379:6379
         env:
           REDIS_PASSWORD: mysecret
-        options: >-
-          --requirepass mysecret
 
 
     steps:
@@ -32,6 +30,7 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: 3.12.6
+          redis password: mysecret
       - name: Install Poetry and dependencies
         run: |
           pip install --upgrade pip
@@ -52,9 +51,9 @@ jobs:
           TELEGRAM_BOT_API_KEY: ${{ secrets.TELEGRAM_BOT_API_KEY }}
           NGROK_HOST: ${{ secrets.NGROK_HOST }}
           TG_ADMIN_CHAT: ${{ secrets.TG_ADMIN_CHAT }}
-          REDIS_HOST: ${{ secrets.REDIS_HOST }}
-          REDIS_PORT: ${{ secrets.REDIS_PORT }}
-          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          REDIS_HOST: 127.0.0.1
+          REDIS_PORT: 6379
+          REDIS_PASSWORD: mysecret
 
       - name: Run tests
         run: "echo ${{ secrets.REDIS_PASSWORD }} && 
