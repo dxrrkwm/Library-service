@@ -33,7 +33,7 @@ jobs:
         run: redis-cli shutdown && redis-server --requirepass mysecret --daemonize yes
       - name: Create the /files directory
         run: |
-          mkdir -p /files
+          sudo mkdir -p /files
       - name: Change folder permissions for /files
         run: |
           sudo chmod -R 777 /files
