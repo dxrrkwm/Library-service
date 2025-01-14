@@ -21,8 +21,6 @@ jobs:
           - 6379:6379
         env:
           REDIS_PASSWORD: mysecret
-        run: |
-          redis-server --requirepass mysecret
 
 
     steps:
@@ -33,6 +31,9 @@ jobs:
         with:
           python-version: 3.12.6
           redis password: mysecret
+      - name: Setup redis
+        run: |
+          redis-server --requirepass mysecret
       - name: Install Poetry and dependencies
         run: |
           pip install --upgrade pip
