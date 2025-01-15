@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os
 from datetime import timedelta
+
 from pathlib import Path
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -180,7 +182,7 @@ JAZZMIN_UI_TWEAKS = {
 MEDIA_URL = "/media/"
 MEDIA_ROOT = "/files/media"
 
-TELEGRAM_BOT_API_KEY = os.environ.get("TELEGRAM_BOT_API_KEY", "")
+TELEGRAM_BOT_API_KEY = os.environ["TELEGRAM_BOT_API_KEY"]
 
 # Django Cache Configuration using Redis as the backend
 CACHES = {
