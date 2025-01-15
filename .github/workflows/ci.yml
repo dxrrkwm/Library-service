@@ -65,8 +65,7 @@ jobs:
           PROD_HOST: ${{ secrets.PROD_HOST }}
 
       - name: Run tests
-        run: "echo ${{ secrets.REDIS_PASSWORD }} && 
-             poetry run python manage.py test"
+        run: "poetry run python manage.py test"
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           POSTGRES_HOST: 127.0.0.1
