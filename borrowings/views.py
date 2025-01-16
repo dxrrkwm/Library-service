@@ -121,8 +121,11 @@ class ReturnBookView(APIView):
     def post(self, request, pk):
         try:
             borrowing = Borrowing.objects.get(pk=pk)
-        except Borrowing.DoesNotExist as err:
-            raise ValidationError({"error": "Borrowing not found."}) from err
+        except Borrowing.DoesNotExist:
+            return Response(
+                {"error": "Borrowing not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
         if borrowing.actual_return_date:
             raise ValidationError({"error": "The book has already been returned."})
