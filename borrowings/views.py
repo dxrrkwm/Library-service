@@ -75,7 +75,7 @@ class BorrowingListView(generics.ListCreateAPIView):
             OpenApiParameter(
                 "is_active",
                 type={"type": "bool", "items": {"type": "number"}},
-                description="Filter by user is activ "
+                description="Filter by user's active status "
                             "(ex. ?is_activ=1 or 0)",
             ),
         ]
