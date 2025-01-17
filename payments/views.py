@@ -12,7 +12,7 @@ from payments.serializers import (
     PaymentListSerializer,
     PaymentSerializer,
 )
-from payments.utils import create_stripe_session
+from payments.utils import create_stripe_session, handle_stripe_error
 
 
 class PaymentListRetrieveViewSet(
@@ -62,10 +62,7 @@ class PaymentListRetrieveViewSet(
         try:
             session = stripe.checkout.Session.retrieve(session_id)
         except stripe.error.StripeError as e:
-            return Response(
-                {"error": str(e)},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return handle_stripe_error(e)
 
         if session.payment_status == "paid":
             payment.status = Payment.PaymentStatus.PAID
