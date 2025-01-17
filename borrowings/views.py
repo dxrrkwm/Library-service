@@ -52,7 +52,12 @@ class BorrowingListView(generics.ListCreateAPIView):
             queryset = queryset.filter(user=self.request.user)
 
         if is_active:
-            queryset = queryset.filter(user__is_active=is_active)
+            activ_validate_list = ["true", "True", "false", "False"]
+
+            if is_active in activ_validate_list:
+                queryset = queryset.filter(user__is_active=is_active)
+            else:
+                raise ValidationError({"is_active": "Invalid value. Use true, True, or false, False."})
 
         if user:
             user_ids = self._params_to_ints(user)
@@ -74,9 +79,9 @@ class BorrowingListView(generics.ListCreateAPIView):
             ),
             OpenApiParameter(
                 "is_active",
-                type={"type": "bool", "items": {"type": "number"}},
+                type={"type": "bool", "items": {"type": "bool"}},
                 description="Filter by user's active status "
-                            "(ex. ?is_activ=1 or 0)",
+                            "(ex. ?is_activ=True(true) or False(false))",
             ),
         ]
     )
