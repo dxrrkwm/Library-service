@@ -112,6 +112,12 @@ class BorrowingDetailView(generics.RetrieveUpdateDestroyAPIView):
         if borrowing.actual_return_date:
             raise ValidationError({"error": "The book has already been returned."})
 
+        if "actual_return_date" in request.data:
+            raise ValidationError({"error": "You cannot update actual_return_date."})
+
+        if "borrow_date" in request.data:
+            raise ValidationError({"error": "You cannot update borrow_date."})
+
         serializer = self.get_serializer(
             borrowing,
             data=request.data,

@@ -43,7 +43,7 @@ class BorrowingSerializer(serializers.ModelSerializer):
             "book",
             "user"
         )
-        read_only_fields = ("id", "actual_return_date")
+        read_only_fields = ("id", "actual_return_date", "borrow_date")
 
     def validate_expected_return_date(self, value):
         if value < date.today():
