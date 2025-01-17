@@ -58,7 +58,7 @@ class BorrowingListView(generics.ListCreateAPIView):
             user_ids = self._params_to_ints(user)
             queryset = queryset.filter(user_id__in=user_ids)
 
-        return queryset.distinct()
+        return queryset.select_related("book", "user").prefetch_related("payments").distinct()
 
     def get_serializer_class(self):
         if self.request.method == "GET":
