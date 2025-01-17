@@ -37,7 +37,10 @@ class BorrowingListView(generics.ListCreateAPIView):
 
     @staticmethod
     def _params_to_ints(params):
-        return [int(str_id) for str_id in params.split(",")]
+        try:
+            return [int(str_id) for str_id in params.split(",")]
+        except ValueError:
+            raise ValidationError({"error": "Invalid user ID format. Expected a comma-separated list of integers."})
 
     def get_queryset(self):
         user = self.request.query_params.get("user")
