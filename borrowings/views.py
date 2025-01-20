@@ -83,7 +83,7 @@ class BorrowingListView(generics.ListCreateAPIView):
                 "is_active",
                 type={"type": "bool", "items": {"type": "bool"}},
                 description="Filter by user's active status "
-                            "(ex. ?is_activ=True(true) or False(false))",
+                            "(ex. ?is_active=True(true) or False(false))",
             ),
         ]
     )
