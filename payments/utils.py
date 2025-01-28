@@ -33,30 +33,18 @@ def handle_stripe_error(e):
     """
     Handles Stripe API errors and returns appropriate HTTP responses.
     """
-    if isinstance(e, stripe.error.PermissionError):
-        return Response(
-            {"error": str(e)},
-            status=status.HTTP_403_FORBIDDEN
-        )
-    elif isinstance(e, stripe.error.APIConnectionError):
-        return Response(
-            {"error": str(e)},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
-    elif isinstance(e, stripe.error.APIError):
-        return Response(
-            {"error": str(e)},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
-    elif isinstance(e, stripe.error.CardError):
-        return Response(
-            {"error": str(e)},
-            status=status.HTTP_400_BAD_REQUEST
-        )
-    return Response(
-        {"error": str(e)},
-        status=status.HTTP_400_BAD_REQUEST
-    )
+    errors = {
+        stripe.error.PermissionError: status.HTTP_403_FORBIDDEN,
+        stripe.error.APIConnectionError: status.HTTP_500_INTERNAL_SERVER_ERROR,
+        stripe.error.APIError: status.HTTP_500_INTERNAL_SERVER_ERROR,
+        stripe.error.CardError: status.HTTP_400_BAD_REQUEST,
+    }
+
+    for error_type, http_status in errors.items():
+        if isinstance(e, error_type):
+            return Response({"error": str(e)}, status=http_status)
+
+    return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 def create_stripe_session(borrowing, request):
