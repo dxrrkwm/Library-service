@@ -16,7 +16,6 @@ class ShortInfoPaymentSerializer(serializers.ModelSerializer):
             "status",
             "type"
         )
-        read_only_fields = fields
 
 
 class DetailInfoPaymentSerializer(serializers.ModelSerializer):
@@ -29,7 +28,6 @@ class DetailInfoPaymentSerializer(serializers.ModelSerializer):
             "money_to_pay",
             "session_url"
         )
-        read_only_fields = fields
 
 
 class BorrowingSerializer(serializers.ModelSerializer):
@@ -43,7 +41,7 @@ class BorrowingSerializer(serializers.ModelSerializer):
             "book",
             "user"
         )
-        read_only_fields = ("id", "actual_return_date")
+        read_only_fields = ("id", "actual_return_date", "borrow_date")
 
     def validate_expected_return_date(self, value):
         if value < date.today():

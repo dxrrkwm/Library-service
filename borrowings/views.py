@@ -37,7 +37,12 @@ class BorrowingListView(generics.ListCreateAPIView):
 
     @staticmethod
     def _params_to_ints(params):
-        return [int(str_id) for str_id in params.split(",")]
+        try:
+            return [int(str_id) for str_id in params.split(",")]
+        except ValueError:
+            raise ValidationError(
+                {"error": "Invalid user ID format. Expected a comma-separated list of integers."}
+            ) from None
 
     def get_queryset(self):
         user = self.request.query_params.get("user")
@@ -49,13 +54,18 @@ class BorrowingListView(generics.ListCreateAPIView):
             queryset = queryset.filter(user=self.request.user)
 
         if is_active:
-            queryset = queryset.filter(user__is_active=is_active)
+            activ_validate_list = ["true", "True", "false", "False"]
+
+            if is_active in activ_validate_list:
+                queryset = queryset.filter(user__is_active=is_active)
+            else:
+                raise ValidationError({"is_active": "Invalid value. Use true, True, or false, False."})
 
         if user:
             user_ids = self._params_to_ints(user)
             queryset = queryset.filter(user_id__in=user_ids)
 
-        return queryset.distinct()
+        return queryset.select_related("book", "user").prefetch_related("payments").distinct()
 
     def get_serializer_class(self):
         if self.request.method == "GET":
@@ -71,9 +81,9 @@ class BorrowingListView(generics.ListCreateAPIView):
             ),
             OpenApiParameter(
                 "is_active",
-                type={"type": "bool", "items": {"type": "number"}},
-                description="Filter by user is activ "
-                            "(ex. ?is_activ=1 or 0)",
+                type={"type": "bool", "items": {"type": "bool"}},
+                description="Filter by user's active status "
+                            "(ex. ?is_active=True(true) or False(false))",
             ),
         ]
     )
@@ -104,6 +114,12 @@ class BorrowingDetailView(generics.RetrieveUpdateDestroyAPIView):
         if borrowing.actual_return_date:
             raise ValidationError({"error": "The book has already been returned."})
 
+        if "actual_return_date" in request.data:
+            raise ValidationError({"error": "You cannot update actual_return_date."})
+
+        if "borrow_date" in request.data:
+            raise ValidationError({"error": "You cannot update borrow_date."})
+
         serializer = self.get_serializer(
             borrowing,
             data=request.data,
@@ -121,8 +137,11 @@ class ReturnBookView(APIView):
     def post(self, request, pk):
         try:
             borrowing = Borrowing.objects.get(pk=pk)
-        except Borrowing.DoesNotExist as err:
-            raise ValidationError({"error": "Borrowing not found."}) from err
+        except Borrowing.DoesNotExist:
+            return Response(
+                {"error": "Borrowing not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
         if borrowing.actual_return_date:
             raise ValidationError({"error": "The book has already been returned."})
