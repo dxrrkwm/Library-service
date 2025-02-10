@@ -1,0 +1,84 @@
+name: CI
+on:
+  pull_request:
+    branches:
+      - "dev"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Python 3.12.6
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.12.6
+          redis password: ${{ secrets.REDIS_PASSWORD }}
+      - name: Install redis
+        run: sudo apt-get install -y redis-tools redis-server
+      - name: Verify that redis is up
+        run: redis-cli ping
+      - name: Setup redis
+        run: redis-cli shutdown && redis-server --requirepass ${{ secrets.REDIS_PASSWORD }} --daemonize yes
+      - name: Create the /files directory
+        run: |
+          sudo mkdir -p /files
+      - name: Change folder permissions for /files
+        run: |
+          sudo chmod -R 777 /files
+      - name: Verify permissions
+        run: |
+          ls -ld /files
+      - name: Install Poetry and dependencies
+        run: |
+          pip install --upgrade pip
+          pip install poetry
+          poetry install
+
+      - name: Run migrations
+        run: poetry run python manage.py migrate
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          POSTGRES_HOST: 127.0.0.1
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
+          TELEGRAM_BOT_API_KEY: ${{ secrets.TELEGRAM_BOT_API_KEY }}
+          NGROK_HOST: ${{ secrets.NGROK_HOST }}
+          TG_ADMIN_CHAT: ${{ secrets.TG_ADMIN_CHAT }}
+          REDIS_HOST: 127.0.0.1
+          REDIS_PORT: 6379
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          PROD_HOST: ${{ secrets.PROD_HOST }}
+
+      - name: Run tests
+        run: "poetry run python manage.py test"
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          POSTGRES_HOST: 127.0.0.1
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
+          TELEGRAM_BOT_API_KEY: ${{ secrets.TELEGRAM_BOT_API_KEY }}
+          NGROK_HOST: ${{ secrets.NGROK_HOST }}
+          TG_ADMIN_CHAT: ${{ secrets.TG_ADMIN_CHAT }}
+          REDIS_HOST: 127.0.0.1
+          REDIS_PORT: 6379
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          PROD_HOST: ${{ secrets.PROD_HOST }}
